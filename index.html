@@ -460,11 +460,11 @@
       },
       double: {
         A:"𝔸",B:"𝔹",C:"ℂ",D:"𝔻",E:"𝔼",F:"𝔽",G:"𝔾",H:"ℍ",I:"𝕀",J:"𝕁",K:"𝕂",L:"𝕃",M:"𝕄",N:"ℕ",O:"𝕆",P:"ℙ",Q:"ℚ",R:"ℝ",S:"𝕊",T:"𝕋",U:"𝕌",V:"𝕍",W:"𝕎",X:"𝕏",Y:"𝕐",Z:"ℤ",
-        a:"𝕒",b:"𝕓",c:"𝕔",d:"𝕕",e:"𝕖",f:"𝕗",g:"𝕘",h:"𝕙",i:"𝕚",j:"𝕛",k:"𝕜",l:"𝕝",m:"𝕞",n:"𝕟",o:"𝕠",p:"𝕡",q:"𝕢",r:"𝕣",s:"𝕤",t:"𝕥",u:"𝕦",v:"𝕧",w:"𝕨",x:"𝕩",y:"𝕪",z:"𝕫"
+        a:"𝕒",b:"𝕓",c:"𝕔",d:"𝕕",e:"𝕖",f:"𝕗",g:"𝕘",h:"𝕙",i:"𝕚",j:"𝕛",k:"𝕜",l:"𝕝",m:"𝖒",n:"𝖓",o:"𝕠",p:"𝕡",q:"𝕢",r:"𝕣",s:"𝕤",t:"𝕥",u:"𝕦",v:"𝕧",w:"𝕨",x:"𝕩",y:"𝕪",z:"𝕫"
       },
       bubble: {
         A:"Ⓐ",B:"Ⓑ",C:"Ⓒ",D:"Ⓓ",E:"Ⓔ",F:"Ⓕ",G:"Ⓖ",H:"Ⓗ",I:"Ⓘ",J:"Ⓙ",K:"Ⓚ",L:"Ⓛ",M:"Ⓜ",N:"Ⓝ",O:"Ⓞ",P:"Ⓟ",Q:"Ⓠ",R:"Ⓡ",S:"Ⓢ",T:"Ⓣ",U:"Ⓤ",V:"Ⓥ",W:"Ⓦ",X:"Ⓧ",Y:"Ⓨ",Z:"Ⓩ",
-        a:"ⓐ",b:"ⓑ",c:"ⓒ",d:"ⓓ",e:"ⓔ",f:"ⓕ",g:"ⓖ",h:"ⓗ",i:"ⓘ",j:"ⓙ",k:"ⓚ",l:"ⓛ",m:"ⓜ",n:"ⓝ",o:"ⓞ",p:"ⓟ",q:"ⓠ",r:"ⓡ",s:"ⓢ",t:"ⓣ",u:"ⓤ",v:"ⓥ",w:"ⓦ",x:"ⓧ",y:"ⓨ",z:"ⓩ"
+        a:"ⓐ",b:"ⓑ",c:"ⓒ",d:"ⓓ",e:"ⓔ",f:"𝓯",g:"ⓖ",h:"ⓗ",i:"ⓘ",j:"ⓙ",k:"ⓚ",l:"ⓛ",m:"ⓜ",n:"ⓝ",o:"ⓞ",p:"ⓟ",q:"ⓠ",r:"ⓡ",s:"ⓢ",t:"ⓣ",u:"ⓤ",v:"ⓥ",w:"ⓦ",x:"ⓧ",y:"ⓨ",z:"ⓩ"
       },
       square: {
         A:"🄰",B:"🄱",C:"🄲",D:"🄳",E:"🄴",F:"🄵",G:"🄶",H:"🄷",I:"🄸",J:"🄹",K:"🄺",L:"🄻",M:"🄼",N:"🄽",O:"🄾",P:"🄿",Q:"🅀",R:"🅁",S:"🅂",T:"🅃",U:"🅄",V:"🅅",W:"🅆",X:"🅇",Y:"🅈",Z:"🅉",
@@ -497,28 +497,10 @@
       analyser.connect(audioCtx.destination);
     }
 
-    // Default Lo-Fi Ambient Tone Generator
-    function createDefaultAmbientTone() {
-      const oscCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const length = 24 * oscCtx.sampleRate;
-      const buffer = oscCtx.createBuffer(2, length, oscCtx.sampleRate);
-      for (let channel = 0; channel < 2; channel++) {
-        const data = buffer.getChannelData(channel);
-        for (let i = 0; i < length; i++) {
-          const t = i / oscCtx.sampleRate;
-          data[i] = (Math.sin(2 * Math.PI * 110 * t) * 0.2 +
-                     Math.sin(2 * Math.PI * 220 * t + 0.2) * 0.15 +
-                     (Math.random() * 2 - 1) * 0.03) * Math.exp(-t * 0.03);
-        }
-      }
-      return buffer;
-    }
-
     // --- Canvas & Visualizers ---
     const canvas = document.getElementById('stage-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Particle engines
     const bokehParticles = Array.from({ length: 45 }, () => ({
       x: Math.random() * 1920,
       y: Math.random() * 1080,
@@ -539,7 +521,6 @@
     function renderStage() {
       requestAnimationFrame(renderStage);
 
-      // Analyze Audio Frequency
       let bassLevel = 0, midLevel = 0;
       if (analyser && !audioEl.paused) {
         analyser.getByteFrequencyData(audioDataArray);
@@ -549,7 +530,6 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Draw Background (Custom Image / Video or Dark Gradient)
       if (state.customBG) {
         ctx.drawImage(state.customBG, 0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
@@ -562,7 +542,6 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // 2. Draw Reactive Visualizer Theme
       if (state.theme === 'bokeh') {
         bokehParticles.forEach(p => {
           p.x += p.vx;
@@ -618,7 +597,6 @@
         ctx.stroke();
         ctx.shadowBlur = 0;
       } else if (state.theme === 'synth') {
-        // Horizon grid
         const horizon = canvas.height * 0.65;
         ctx.strokeStyle = 'rgba(5, 217, 232, 0.4)';
         ctx.lineWidth = 2;
@@ -636,7 +614,6 @@
         }
       }
 
-      // 3. Render Synced Lyrics
       const currTime = audioEl.currentTime;
       let activeIdx = 0;
       for (let i = 0; i < state.lyrics.length; i++) {
@@ -656,18 +633,15 @@
         const textX = canvas.width / 2;
         const textY = canvas.height * state.posY;
 
-        // Stroke Outline
         if (state.strokeWidth > 0) {
           ctx.strokeStyle = '#000000';
           ctx.lineWidth = state.strokeWidth * 2.5;
           ctx.strokeText(textToDisplay, textX, textY);
         }
 
-        // Glow Shadow
         ctx.shadowColor = state.glowColor;
         ctx.shadowBlur = 24 * (1 + bassLevel * 0.8);
 
-        // Fill Text
         ctx.fillStyle = state.textColor;
         ctx.fillText(textToDisplay, textX, textY);
 
@@ -677,7 +651,6 @@
 
     renderStage();
 
-    // --- UI Controls Binding ---
     const btnPlay = document.getElementById('btn-play');
     btnPlay.addEventListener('click', () => {
       initAudio();
@@ -708,7 +681,6 @@
       return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
     }
 
-    // Audio file upload
     document.getElementById('audio-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -718,7 +690,6 @@
       btnPlay.innerText = '⏸';
     });
 
-    // Custom background file upload (Image / Video)
     document.getElementById('bg-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -736,12 +707,10 @@
       }
     });
 
-    // Style Drawer Toggle
     const drawer = document.getElementById('style-drawer');
     document.getElementById('btn-toggle-drawer').addEventListener('click', () => drawer.classList.add('open'));
     document.getElementById('btn-close-drawer').addEventListener('click', () => drawer.classList.remove('open'));
 
-    // Styling inputs
     document.getElementById('sel-theme').addEventListener('change', (e) => state.theme = e.target.value);
     document.getElementById('sel-font').addEventListener('change', (e) => state.font = e.target.value);
     document.getElementById('col-text').addEventListener('input', (e) => state.textColor = e.target.value);
@@ -759,12 +728,10 @@
       document.getElementById('lbl-stroke').innerText = `${e.target.value}px`;
     });
 
-    // Quick presets
     document.getElementById('pos-top').addEventListener('click', () => { state.posY = 0.20; document.getElementById('rng-pos-y').value = 20; });
     document.getElementById('pos-center').addEventListener('click', () => { state.posY = 0.50; document.getElementById('rng-pos-y').value = 50; });
     document.getElementById('pos-bot').addEventListener('click', () => { state.posY = 0.80; document.getElementById('rng-pos-y').value = 80; });
 
-    // Unicode chips
     document.querySelectorAll('.style-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
@@ -773,7 +740,6 @@
       });
     });
 
-    // Aspect ratio toggle (16:9 landscape vs 9:16 vertical shorts)
     const btnRatio = document.getElementById('btn-ratio');
     btnRatio.addEventListener('click', () => {
       if (state.aspectRatio === '16:9') {
@@ -789,7 +755,6 @@
       }
     });
 
-    // Lyrics Modal
     const lyricsModal = document.getElementById('lyrics-modal');
     const lyricsTextArea = document.getElementById('lyrics-text');
 
@@ -819,7 +784,6 @@
       lyricsModal.classList.remove('open');
     });
 
-    // --- Screen Wake Lock API & 1-Click Video Recording ---
     const btnRecord = document.getElementById('btn-record');
     const recordTxt = document.getElementById('record-txt');
 
@@ -841,14 +805,12 @@
 
     btnRecord.addEventListener('click', async () => {
       if (!state.isRecording) {
-        // Start Recording
         initAudio();
         await requestWakeLock();
 
         const canvasStream = canvas.captureStream(30);
         let combinedStream = canvasStream;
 
-        // Combine canvas stream with audio track
         if (audioCtx) {
           const dest = audioCtx.createMediaStreamDestination();
           sourceNode.connect(dest);
@@ -885,7 +847,6 @@
           btnPlay.innerText = '⏸';
         }
       } else {
-        // Stop Recording
         state.mediaRecorder.stop();
         state.isRecording = false;
         btnRecord.classList.remove('btn-recording');
